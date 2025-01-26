@@ -1,6 +1,6 @@
 from rest_framework import generics
-from .models import Post, Comment
-from .serializers import PostSerializer, CommentSerializer
+from .models import Post, Comment, Category
+from .serializers import PostSerializer, CommentSerializer, CategorySerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, status
 from rest_framework.response import Response
@@ -11,9 +11,18 @@ class PostList(generics.ListAPIView):
     serializer_class = PostSerializer
 
 
+class CategoryList(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
 class CreatePost(generics.CreateAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        # Automatically set the creator to the authenticated user
+        serializer.save(creator=self.request.user)
 
 
 # class PostCreate(generics.)

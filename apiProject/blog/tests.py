@@ -24,9 +24,7 @@ class CreatePostTests(APITestCase):
         )  # Replace 'create-post' with the actual URL name
 
     def test_create_post_authenticated(self):
-        """
-        Ensure an authenticated user can create a post.
-        """
+
         data = {
             "title": "Test Post",
             "content": "This is a test post content.",
@@ -34,6 +32,7 @@ class CreatePostTests(APITestCase):
         }
 
         response = self.client.post(self.url, data, format="json")
+        print(response.data)  # Print the response data for debugging
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Post.objects.count(), 1)
         self.assertEqual(Post.objects.get().title, "Test Post")
