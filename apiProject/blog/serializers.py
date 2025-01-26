@@ -41,6 +41,11 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    creator = serializers.SerializerMethodField()
+
     class Meta:
         fields = "__all__"
         model = Comment
+
+    def get_creator(self, obj):
+        return obj.creator.username

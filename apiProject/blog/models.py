@@ -20,9 +20,7 @@ class Post(models.Model):
     )
     likes = models.ManyToManyField(User, related_name="liked_posts", blank=True)
     dislikes = models.ManyToManyField(User, related_name="disliked_posts", blank=True)
-    category = models.ForeignKey(
-        Category, on_delete=models.SET_NULL, null=True, blank=True
-    )
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
@@ -30,6 +28,11 @@ class Post(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    creator = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="comments_created",
+    )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
