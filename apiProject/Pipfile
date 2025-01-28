@@ -10,6 +10,7 @@ dj-rest-auth = "*"
 django-allauth = "*"
 requests = "*"
 django-cors-headers = "*"
+drf-yasg = "*"
 
 [dev-packages]
 
