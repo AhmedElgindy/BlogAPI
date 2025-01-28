@@ -4,6 +4,8 @@ from .serializers import PostSerializer, CommentSerializer, CategorySerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, status
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import api_view
 
 
 class PostList(generics.ListAPIView):
@@ -68,3 +70,24 @@ class CommentPostView(APIView):
         comment = Comment.objects.create(post=post, creator=user, content=content)
         serializer = CommentSerializer(comment)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["GET"])
+def posts_by_category(request, category_id):
+    try:
+        category = Category.objects.get(id=category_id)
+
+        posts = Post.objects.filter(category=category)
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        result_page = paginator.paginate_queryset(posts, request)
+        serializer = PostSerializer(result_page, many=True)
+
+        return paginator.get_paginated_response(
+            {"category": category.name, "posts": serializer.data}
+        )
+
+    except:
+        return Response(
+            {"error": "Category Not Found "}, status=status.HTTP_400_NOT_FOUND
+        )
